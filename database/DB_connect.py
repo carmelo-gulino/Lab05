@@ -3,10 +3,16 @@ from mysql.connector import errorcode
 
 
 def get_connection() -> mysql.connector.connection:
+    """
+    crea e restituisce la connessione
+    :return: cnx
+    """
     try:
         cnx = mysql.connector.connect(
-            option_files='./database/connector.cnf'
+            option_files="C:/Users/PC/Desktop/CARMELO/università/anno III/tecniche di programmazione/progetti/Lab05/database/connector.cnf"
         )
+        return cnx
+
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
             print("Something is wrong with your user name or password")

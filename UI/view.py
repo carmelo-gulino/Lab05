@@ -13,30 +13,60 @@ class View(ft.UserControl):
         self._controller = None
         # graphical elements
         self._title = None
-        self.txt_name = None
-        self.btn_hello = None
+        self.nome_corso = None
+        self.btn_cerca_iscr = None
+        self.txt_matricola = None
+        self.txt_nome = None
+        self.txt_cognome = None
+        self.btn_cerca_stud = None
+        self.btn_cerca_corsi = None
+        self.btn_cerca_iscrivi = None
         self.txt_result = None
         self.txt_container = None
 
     def load_interface(self):
         """Function that loads the graphical elements of the view"""
         # title
-        self._title = ft.Text("Hello World", color="blue", size=24)
+        self._title = ft.Text("App Gestione Studenti", color="blue", size=24)
         self._page.controls.append(self._title)
-
-        #ROW with some controls
-        # text field for the name
-        self.txt_name = ft.TextField(
-            label="name",
-            width=200,
-            hint_text="Insert a your name"
+        #ROW 1
+        # nome del corso
+        self.nome_corso = ft.Dropdown(
+            label="corso",
+            width=500,
+            hint_text="Selezionare un corso"
         )
+        self.fillCorso()    #METODO CHE CARICA TUTTI I CORSI
 
-        # button for the "hello" reply
-        self.btn_hello = ft.ElevatedButton(text="Hello", on_click=self._controller.handle_hello)
-        row1 = ft.Row([self.txt_name, self.btn_hello],
-                      alignment=ft.MainAxisAlignment.CENTER)
+        # button for the "cerca" reply
+        self.btn_cerca_iscr = ft.ElevatedButton(text="Cerca iscritti", on_click=self._controller.handle_cerca_iscr)
+        row1 = ft.Row([self.nome_corso, self.btn_cerca_iscr], alignment=ft.MainAxisAlignment.CENTER)
         self._page.controls.append(row1)
+
+        #ROW 2
+        self.txt_matricola = ft.TextField(
+            width=166,
+            hint_text="matricola"
+        )
+        self.txt_nome = ft.TextField(
+            width=166,
+            hint_text="nome",
+            read_only=True
+        )
+        self.txt_cognome = ft.TextField(
+            width=166,
+            hint_text="cognome",
+            read_only=True
+        )
+        row2 = ft.Row([self.txt_matricola, self.txt_nome, self.txt_cognome], alignment=ft.MainAxisAlignment.CENTER)
+        self._page.controls.append(row2)
+
+        #ROW 3
+        self.btn_cerca_stud = ft.ElevatedButton(text="Cerca studente", on_click=self._controller.handle_cerca_stud)
+        self.btn_cerca_corsi = ft.ElevatedButton(text="Cerca corsi", on_click=self._controller.handle_hello)
+        self.btn_cerca_iscrivi = ft.ElevatedButton(text="Iscrivi", on_click=self._controller.handle_hello)
+        row3 = ft.Row([self.btn_cerca_stud, self.btn_cerca_corsi, self.btn_cerca_iscrivi], alignment=ft.MainAxisAlignment.CENTER)
+        self._page.controls.append(row3)
 
         # List View where the reply is printed
         self.txt_result = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=True)
@@ -64,3 +94,25 @@ class View(ft.UserControl):
 
     def update_page(self):
         self._page.update()
+
+    def fillCorso(self):
+        """
+        accedo al database e popolo il menu con tutti i corsi disponibili
+        """
+        corsi = self._controller.handle_fill()
+        for c in corsi:
+            self.nome_corso.options.append(ft.dropdown.Option(key=c.codins, text=c))
+        return self.nome_corso
+
+    def cleanPage(self):
+        """
+        pulisce i campi della pagina
+        :return:
+        """
+        self.nome_corso = None
+        self.txt_matricola = None
+        self.txt_nome = None
+        self.txt_cognome = None
+        self.txt_result = None
+        self.txt_container = None
+        self.update_page()
