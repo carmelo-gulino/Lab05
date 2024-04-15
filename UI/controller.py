@@ -31,15 +31,13 @@ class Controller:
         :param e:
         :return: lista di studenti
         """
+        self._view.cleanView()
         try:
             corso = self._model.cercaCorso(self._view.nome_corso.value)
-            self._view.txt_result.controls.append(ft.Text(f"Ci sono {len(corso.studenti)} iscritti:"))
-            for s in corso.studenti:
-                self._view.txt_result.controls.append(ft.Text(s))
-            self._view.update_page()
-            #self._view.cleanPage()
+            self._view.printIscritti(corso)
         except AttributeError:
             self._view.create_alert("Selezionare un corso!")
+        self._view.cleanPage()
 
     def handle_cerca_stud(self, e):
         """
@@ -47,18 +45,52 @@ class Controller:
         :param e:
         :return:
         """
+        self._view.cleanView()
         try:
             studente = self._model.cercaStudente(int(self._view.txt_matricola.value))
-            self._view.txt_nome.value = f"{studente.nome}"
-            self._view.txt_cognome.value = f"{studente.cognome}"
+            self._view.compilaCampi(studente)
             self._view.update_page()
-            #self._view.cleanPage()
         except AttributeError:
-            if self._view.txt_matricola.value=="":
-                self._view.create_alert("Selezionare una matricola!")
-            else:
-                self._view.create_alert("Studente non presente!")
+            self._view.create_alert("Studente non presente!")
+            self._view.cleanPage()
+        except ValueError:
+            self._view.create_alert("Selezionare una matricola!")
+            self._view.cleanPage()
 
-    #TODO
-    #metodo che pulisce la pagina dopo ogni azione
+    def handle_cerca_corsi(self, e):
+        """
+        restituisce una lista dei corsi a cui è iscritto lo studente
+        :param e:
+        :return:
+        """
+        self._view.cleanView()
+        try:
+            studente = self._model.cercaStudente(int(self._view.txt_matricola.value))
+            self._view.printCorsi(studente)
+        except AttributeError:
+            self._view.create_alert("Studente non presente!")
+        except ValueError:
+            self._view.create_alert("Selezionare una matricola!")
+        self._view.cleanPage()
 
+    def handle_iscrivi(self, e):
+        """
+        chiama i metodi per aggiungere un'istanza ad 'iscrizione' ed aggiungere
+        il corso allo studente e lo studente al corso
+        :param e:
+        :return:
+        """
+        self._view.cleanView()
+        try:
+            studente = self._model.cercaStudente(int(self._view.txt_matricola.value))
+            corso = self._model.cercaCorso(self._view.nome_corso.value)
+            self._model.addIscrizione(studente, corso)
+        except AttributeError:
+            self._view.create_alert("Studente non presente!")
+            return
+        except ValueError:
+            self._view.create_alert("Selezionare matricola e corso!")
+            return
+        except KeyError:
+            self._view.create_alert("Studente già iscritto!")
+        self._view.cleanPage()

@@ -14,3 +14,6 @@ class Studente:
 
     def addCorso(self, corso):
         self.iscrizioni.append(corso)
+
+    def __eq__(self, other):
+        return self.matricola == other.matricola

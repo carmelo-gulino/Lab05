@@ -62,6 +62,19 @@ class Model:
                 c.addIscritto(st)       #aggiungo alla lista di studenti
         return self._corsi
 
+    def addIscrizione(self, studente, corso):
+        """
+        aggiunge il corso allo studente e lo studente al corso attraverso StudenteDAO
+        :param studente:
+        :param corso:
+        :return:
+        """
+        self.check_iscrizione(studente, corso)
+        studente.addCorso(corso)
+        corso.addIscritto(studente)
+        sDAO = StudenteDAO()
+        sDAO.iscrivi(studente.matricola, corso.codins)
+
     def cercaCorso(self, codins):
         for c in self._corsi:
             if c.codins == codins:
@@ -79,6 +92,10 @@ class Model:
     @property
     def corsi(self):
         return self._corsi
+
+    def check_iscrizione(self, studente, corso):
+        if studente in corso.studenti:
+            raise KeyError
 
 if __name__ == '__main__':
     model = Model()

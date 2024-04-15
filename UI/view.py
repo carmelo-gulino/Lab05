@@ -63,9 +63,9 @@ class View(ft.UserControl):
 
         #ROW 3
         self.btn_cerca_stud = ft.ElevatedButton(text="Cerca studente", on_click=self._controller.handle_cerca_stud)
-        self.btn_cerca_corsi = ft.ElevatedButton(text="Cerca corsi", on_click=self._controller.handle_hello)
-        self.btn_cerca_iscrivi = ft.ElevatedButton(text="Iscrivi", on_click=self._controller.handle_hello)
-        row3 = ft.Row([self.btn_cerca_stud, self.btn_cerca_corsi, self.btn_cerca_iscrivi], alignment=ft.MainAxisAlignment.CENTER)
+        self.btn_cerca_corsi = ft.ElevatedButton(text="Cerca corsi", on_click=self._controller.handle_cerca_corsi)
+        self.btn_iscrivi = ft.ElevatedButton(text="Iscrivi", on_click=self._controller.handle_iscrivi)
+        row3 = ft.Row([self.btn_cerca_stud, self.btn_cerca_corsi, self.btn_iscrivi], alignment=ft.MainAxisAlignment.CENTER)
         self._page.controls.append(row3)
 
         # List View where the reply is printed
@@ -109,10 +109,27 @@ class View(ft.UserControl):
         pulisce i campi della pagina
         :return:
         """
-        self.nome_corso = None
-        self.txt_matricola = None
-        self.txt_nome = None
-        self.txt_cognome = None
-        self.txt_result = None
-        self.txt_container = None
+        self.nome_corso.value = None
+        self.txt_matricola.value = None
+        self.txt_nome.value = None
+        self.txt_cognome.value = None
         self.update_page()
+
+    def compilaCampi(self, studente):
+        self.txt_nome.value = f"{studente.nome}"
+        self.txt_cognome.value = f"{studente.cognome}"
+
+    def printIscritti(self, corso):
+        self.txt_result.controls.append(ft.Text(f"Ci sono {len(corso.studenti)} iscritti:"))
+        for s in corso.studenti:
+            self.txt_result.controls.append(ft.Text(s))
+        self.update_page()
+
+    def printCorsi(self, studente):
+        self.txt_result.controls.append(ft.Text(f"Risultano {len(studente.iscrizioni)} corsi:"))
+        for c in studente.iscrizioni:
+            self.txt_result.controls.append(ft.Text(c))
+        self.update_page()
+
+    def cleanView(self):
+        self.txt_result.controls = None

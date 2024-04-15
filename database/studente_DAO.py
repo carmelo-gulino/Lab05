@@ -34,6 +34,20 @@ class StudenteDAO:
         cursor.close()
         return iscr
 
+    def iscrivi(self, matricola, codins):
+        """
+        aggiunge matricola e codins alla relazione iscrizione nel database
+        :param matricola:
+        :param codins:
+        :return:
+        """
+        cnx = get_connection()
+        cursor = cnx.cursor()
+        query = """insert into iscrizione (matricola, codins) values (%s, %s)"""
+        cursor.execute(query, (matricola, codins))
+        cnx.commit()
+        cursor.close()
+
 if __name__ == '__main__':
     dao = StudenteDAO()
     iscr = dao.get_iscrizioni()
